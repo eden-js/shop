@@ -223,10 +223,15 @@ class CheckoutController extends Controller {
 
     // unset error
     order.unset('error');
+    
+    const raw = req.cookie || req.cookies;
 
     // set order meta
     order.set('meta', {
-      cookies   : req.cookie || req.cookies,
+      cookies   : Object.keys(raw).reduce((obj, key) => {
+        obj[key.replace(/\./g, "_")] = raw[key];
+          return obj;
+      }, {}),
       session   : req.sessionID,
       continued : new Date(),
     });
@@ -313,6 +318,8 @@ class CheckoutController extends Controller {
 
     // run try/catch
     try {
+      const raw = req.cookie || req.cookies;
+
       // create order
       const order = await Order.findOne({
         status    : null,
@@ -322,7 +329,10 @@ class CheckoutController extends Controller {
         user : req.user,
         meta : {
           started : new Date(),
-          cookies : req.cookie || req.cookies,
+          cookies : Object.keys(raw).reduce((obj, key) => {
+              obj[key.replace(/\./g, "_")] = raw[key];
+              return obj;
+            }, {}),
           session : req.sessionID,
         },
         actions : {},
