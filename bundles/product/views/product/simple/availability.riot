@@ -1,0 +1,14 @@
+<product-simple-availability>
+  <span>
+    <span itemprop="numberOfItems">{ get('product.availability.quantity', 0) }</span> { eden.get('i18n.t')('left') }
+  </span>
+
+  <script>
+    // import base
+    import Base from '../../js/base';
+
+    // export default
+    export default class ProductSimpleAvailability extends Base {}
+
+  </script>
+</product-simple-availability>

@@ -1,0 +1,100 @@
+<product-page>
+  <div class="container-product my-5" itemscope itemtype="http://schema.org/Product">
+    <div class="row product-top mb-4">
+      <div class="col-md-4 product-media" if={ thumbnail }>
+        <div class="card card-product-image mb-3">
+          <a class="card-body" href={ this.media.url(thumbnail) } target="_blank">
+            <img class="img-fluid" itemprop="image" src={ this.media.url(thumbnail, '3x-sq') } alt={ title() }>
+          </a>
+        </div>
+        <div class="row row-img-gallery mb-3">
+          <a each={ (image, i) in props.product.images } href="#!" class="col-4 mb-2" onclick={ (e) => onImage(e, image) }>
+            <div class="card py-2 px-2">
+              <img class="img-fluid" src={ media.url(image, '3x-sq') } alt={ title() }>
+            </div>
+          </a>
+        </div>
+      </div>
+      <div class={ classes({ 'col-md-8' : thumbnail, 'col-md-12' : !thumbnail }) }>
+        <div class="product-header">
+          <h1 class="product-title mb-0">
+            <div class="row">
+              <div class="col-9">
+                <div class="text-overflow" itemprop="name">{ props.product.title[get('i18n.lang')()] }</div>
+              </div>
+              <div class="col-3 text-right text-success">
+                <small itemprop="offers" itemscope itemtype="http://schema.org/Offer" is={ `product-{props.product.type}-price` } product={ props.product } />
+              </div>
+            </div>
+          </h1>
+          <div class="product-meta">
+            <div class="row">
+              <div class="col-9 d-flex align-items-center">
+                <a class="btn btn-sm btn-success mr-2" itemprop="category" each={ (category, i) in props.product.categories } href={ `/${category.slug}` }>{ category.title[get('i18n.lang')()] }</a>
+              </div>
+              <div class="col-3 product-quantity text-right text-success">
+                <span class="btn btn-link pr-0">
+                  <span is={ `product-${props.product.type}-availability` } product={ props.product } />
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="product-body">
+          <div class="product-description my-5">
+            <raw data={ { 'html' : props.product.description[get('i18n.lang')()] } } itemprop="description" />
+          </div>
+          <div is={ `product-${props.product.type}-buy` } class={ `product-${props.product.type}-buy` } product={ props.product } />
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // import base
+    import Base from './js/base';
+
+    // export default
+    export default class Product extends Base {
+      /**
+       * on before mount
+       */
+      onBeforeMount(...args) {
+        // run super
+        super.onBeforeMount(...args);
+
+        // set thumbnail
+        this.thumbnail = this.props.product.images && this.props.product.images.length ? this.props.product.images[0] : null;
+      }
+
+
+      /**
+       * on image click
+       *
+       * @param  {Event} e
+       */
+      onImage (e, image) {
+        // prevent default
+        e.preventDefault();
+
+        // set image
+        this.thumbnail = image;
+
+        // update view
+        this.update();
+      }
+  
+
+      /**
+       * returns translated title
+       *
+       * @return {String}
+       */
+      title () {
+        // return title
+        return this.props.product.title[this.get('i18n.lang')()];
+      }
+    }
+
+  </script>
+</product-page>

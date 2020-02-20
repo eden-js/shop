@@ -1,0 +1,87 @@
+<payment-checkout>
+  <div class="card card-payment card-checkout mb-3">
+
+    <!-- payment choices -->
+    <div class="card-body p-0">
+      <div class="list-group list-group-flush">
+        <virtual each={ (method, i) in methods() }>
+          <li class={ classes({ 'list-group-item list-group-item-method' : true, 'list-group-item-active' : isActive(method.type) }) } is={ `${method.type}-method` } action={ action() } method={ method } val={ (action().value || {}) } on-ready={ onMethod } checkout={ checkout } />
+        </virtual>
+      </div>
+    </div>
+    <!-- / payment choices -->
+    
+  </div>
+
+  <script>
+    // import base
+    import Base from '../js/base';
+
+    // export default
+    export default class PaymentCheckout extends Base {
+
+      /**
+       * on before mount
+       */
+      onBeforeMount(...args) {
+        // run super
+        super.onBeforeMount(...args);
+    
+        // set checkout
+        this.checkout = this.props.checkout;
+      }
+
+      /**
+       * return action
+       *
+       * @return {Object}
+       */
+      action () {
+        // return action
+        return this.props.action;
+      }
+
+      /**
+       * return methods
+       *
+       * @return {Array}
+       */
+      methods () {
+        // return methods
+        return (this.props.action.data.methods || []).filter((method) => method.show !== false);
+      }
+
+      /**
+       * on method function
+       *
+       * @param  {Object} method
+       */
+      onMethod (method) {
+        // set value
+        this.props.action.value = method;
+
+        // update checkout
+        if (this.props.checkout) {
+          // add checkout
+          this.props.checkout.update();
+        } else {
+          // update view
+          this.update();
+        }
+      }
+
+      /**
+       * returns true if payment active
+       *
+       * @param  {String}  type
+       *
+       * @return {Boolean}
+       */
+      isActive (type) {
+        // return is active
+        return (this.props.action.value || {}).type === type;
+      }
+    }
+
+  </script>
+</payment-checkout>

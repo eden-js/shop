@@ -1,0 +1,106 @@
+<money-dropdown>
+  <ul class="nav navbar-nav">
+    <li class={ classes({ 'nav-item dropdown' : true, 'show' : show }) }>
+      <button class="btn btn-link dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        { currency }
+      </button>
+      <div class="dropdown-menu">
+        <div each={ (currency, key) in get('shop.rates') }>
+          <a href="#!" class={ classes({ 'dropdown-item' : true, 'active' : isCurrency(key) }) } onclick={ (e) => onChange(e) }>{ key }</a>
+        </div>
+      </div>
+    </li>
+  </ul>
+
+  <script>
+    // import base
+    import Base from '../js/base';
+
+    // export default
+    export default class MoneyDropdown extends Base {
+
+      onBeforeMount(...args) {
+        // on before mount
+        super.onBeforeMount(...args);
+
+        // set variables
+        this.show     = false;
+        this.currency = this.settings.currency || this.eden.get('shop.currency');
+      }
+
+      /**
+       * on show dropdown
+       *
+       * @param  {Event} e
+       */
+      onChange (e) {
+        // prevent default
+        e.preventDefault();
+
+        // set show
+        this.currency = e.item.key;
+
+        // set show
+        this.show = false;
+
+        // set currency
+        this.settings.set('currency', this.currency);
+
+        // on mouseup
+        jQuery(document).mouseup((e) => {
+          // check show
+          if (!this.show) return;
+
+          // let container
+          const container = jQuery(this.root);
+
+          // check container
+          if (!container.is(e.target) && container.has(e.target).length === 0) {
+            // check show
+            this.show = false;
+
+            // update view
+            this.update();
+          }
+        });
+      }
+
+      /**
+       * on show dropdown
+       *
+       * @param  {Event} e
+       */
+      onShow (e) {
+        // prevent default
+        e.preventDefault();
+
+        // set show
+        this.show = !this.show;
+      }
+
+      /**
+       * close dropdown
+       */
+      onClose () {
+        // set show
+        this.show = false;
+
+        // update view
+        this.update();
+      }
+
+      /**
+       * return true if currency is selected
+       *
+       * @param  {String}  currency
+       *
+       * @return {Boolean}
+       */
+      isCurrency (currency) {
+        // return true
+        return currency === this.currency;
+      }
+    }
+
+  </script>
+</money-dropdown>

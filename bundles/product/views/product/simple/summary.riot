@@ -1,0 +1,46 @@
+<product-simple-summary>
+  <div class="row mb-2 row-eq-height">
+    <div class="col-2 pr-0">
+      <img class="img-fluid img-thumbnail" if={ get('line.product.images.0') } src={ media.url(get('line.product.images.0'), '3x-sq') } alt={ get(`line.product.title.${eden.get('i18n.lang')()}`) }>
+    </div>
+    <div class="col-7 d-flex align-items-center">
+      <div class="w-100">
+        <b class="d-block mb-0 text-overflow">
+          { propx.line.qty }x { get(`line.product.title.${eden.get('i18n.lang')()}`) }
+        </b>
+        <p class="mb-0 text-overflow">
+          { get(`line.product.short.${eden.get('i18n.lang')()}`) }
+        </p>
+      </div>
+    </div>
+    <div class="col-3 text-right d-flex align-items-center">
+      <div class="w-100 text-right">
+        <money class="text-bold" amount={ product.price(props.line.product, props.line.opts) * props.line.qty } />
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // import base
+    import Base from '../../js/base';
+    import media from 'asset/public/js/bootstrap';
+    import product from 'product/public/js/product';
+
+    // export default
+    export default class ProductSimpleSummary extends Base {
+
+      /**
+       * on before mount
+       */
+      onBeforeMount(...args) {
+        // on before mount
+        super.onBeforeMount(...args);
+
+        // mixin media
+        this.media = media;
+        this.product = product;
+      }
+    }
+
+  </script>
+</product-simple-summary>

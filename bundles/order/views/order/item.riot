@@ -1,0 +1,45 @@
+<order-item>
+  <a href={ `/order/${opts.order.id}` } class="card card-order mb-3">
+    <div class="card-block">
+      <div class="row">
+        <div class="col-md-2 display-3 text-center">
+          <fa i={ props.order.sent ? 'check' : (get('order.invoice.paid') ? 'check' : 'times') } class={ classes({ 'display-2' : true, 'text-success' : props.order.sent, 'text-danger' : !get('order.invoice.paid'), 'text-primary' : get('order.invoice.paid') && !props.order.sent }) } />
+        </div>
+        <div class="col-md-10 text-body">
+          <h4 class="card-title text-overflow mb-3">
+            { props.order.sent ? get('i18n.t')('order.completed') : get('order.invoice.paid') ? get('i18n.t')('order.processing') : get('i18n.t')('order.payment.pending') } { get('i18n.t')('order.title') } #{ props.order.id }
+          </h4>
+          <p class="card-text mb-0 text-overflow">
+            { count().toString() } { get('i18n.t')('order.items') } <money if={ props.order.invoice } amount={ props.order.invoice.total } convert={ false } currency={ props.order.invoice.currency } show-currency={ true } />
+          </p>
+        </div>
+      </div>
+    </div>
+  </a>
+
+  <script>
+    // import base
+    import Base from '../js/base';
+
+    // export default
+    export default class OrderItem extends Base {
+
+      /**
+       * count order items
+       *
+       * @return {Integer}
+       */
+      count () {
+        // set quantities
+        const quantities = this.props.order.lines.map((line) => parseInt(line.qty));
+
+        // reduce for total
+        return quantities.reduce((a, b) => {
+          // return sum
+          return (parseInt(a) + parseInt(b));
+        }, 0);
+      }
+    }
+
+  </script>
+</order-item>

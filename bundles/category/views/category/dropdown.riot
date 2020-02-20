@@ -1,0 +1,61 @@
+<category-dropdown>
+  <input type="hidden" name="c" if={ category } value={ category.id || '' } />
+  <button type="button" class="btn btn-search dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+    { category ? category.title[get('i18n.lang')()] : 'All' }
+  </button>
+  <div class="dropdown-menu dropdown-menu-right">
+    <a class={ classes({ 'dropdown-item' : true, 'active' : !category }) } href="#!" onclick={ (e) => onCategory(e, category) }>All</a>
+    <div role="separator" class="dropdown-divider"></div>
+    <a each={ (category, i) in categories } class={ classes({ 'dropdown-item' : true, 'active' : isCategory(category) }) } href="#!" onclick={ onCategory }>{ category.title[get('i18n.lang')()] }</a>
+  </div>
+  
+  <script>
+    // import base
+    import Base from '../js/base';
+
+    // export default
+    export default class CategoryDropdown extends Base {
+
+      /**
+       * on before mount
+       */
+      onBeforeMount(...args) {
+        // run super
+        super.onBeforeMount(...args);
+
+        // category
+        this.category   = false;
+        this.categories = this.eden.get('categories') || [];
+      }
+
+      /**
+       * changes category
+       *
+       * @param  {Event} e
+       */
+      onCategory (e, category) {
+        // prevent default
+        e.preventDefault ();
+
+        // on category
+        this.category = category || false;
+
+        // update view
+        this.update ();
+      }
+
+      /**
+       * returns true if category
+       *
+       * @param  {Object}  category
+       *
+       * @return {Boolean}
+       */
+      isCategory (category) {
+        // return true if category
+        return (category.id === (this.category || {}).id);
+      }
+    }
+
+  </script>
+</category-dropdown>

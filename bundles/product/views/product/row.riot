@@ -1,0 +1,22 @@
+<product-row class={ getColClass() }>
+  <div is={ `product-${props.row.get('type')}-card` } product={ props.row.get() } />
+  
+  <script>
+    // import base
+    import Base from '../js/base';
+
+    // export default
+    export default class ProductRow extends Base {
+
+      /**
+       * gets column class
+       *
+       * @return {*}
+       */
+      getColClass() {
+        // get class
+        return this.parent.getClass('col', 'col-lg-2 col-md-3 col-6');
+      }
+    }
+  </script>
+</product-row>

@@ -1,0 +1,46 @@
+<order-actions>
+  <div class="btn-group btn-group-sm" role="group">
+    <a href={ `/admin/shop/order/${props.row._id}/update` } class="btn btn-primary" onclick={ onUpdate }>
+      <i class="fa fa-pencil-alt" />
+    </a>
+    <a href={ `/admin/shop/order/${opts.row._id}/remove` } class="btn btn-danger" onclick={ onRemove }>
+      <i class="fa fa-times" />
+    </a>
+  </div>
+
+  <script>
+    // import base
+    import Base from '../js/base';
+
+    // export default
+    export default class OrderActions extends Base {
+  
+      /**
+       * on update
+       *
+       * @param  {Event} e
+       */
+      onUpdate(e) {
+        // check update button
+        if (this.parent.props.onUpdateButton) {
+          // do update button
+          return this.parent.props.onUpdateButton(e, this.props.row);
+        }
+      }
+      
+      /**
+       * on remove
+       *
+       * @param  {Event} e
+       */
+      onRemove(e) {
+        // check update button
+        if (this.parent.props.onRemoveButton) {
+          // do update button
+          return this.parent.props.onRemoveButton(e, this.props.row);
+        }
+      }
+    }
+  
+  </script>
+</order-actions>

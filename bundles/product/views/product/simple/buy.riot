@@ -1,0 +1,66 @@
+<product-simple-buy>
+  <div class="product-simple-buy">
+    <div class="card">
+      <div class="card-body">
+        <span class="btn btn-link px-0">
+          <span is={ `product-${props.product.type}-availability` } product={ props.product } />
+        </span>
+        
+        <a href="/checkout" class="btn btn-primary float-right ml-2" if={ cart.has(props.product) && !props.onAdd }>
+          { eden.get('i18n.t')('checkout.proceed') }
+        </a>
+        
+        <span class="btn-group float-right">
+          <a href="#!" if={ cart.has(props.product) && !props.onAdd } onclick={ (e) => onRemove(e) } class="btn btn-danger">
+            <i class="fa fa-times" />
+          </a>
+          <a href="#!" onclick={ (e) => onAdd(e) } class={ classes({ 'btn btn-success' : true, 'disabled' : !props.product.price.available }) }>
+            <span if={ cart.has(props.product) && !props.onAdd }>{ cart.line(props.product).qty }</span> { eden.get('i18n.t')(cart.has(props.product) && !props.onAdd ? 'cart.added' : 'cart.add') }
+          </a>
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // import base
+    import Base from '../../js/base';
+
+    // export default
+    export default class ProductSimpleBuy extends Base {
+
+      /**
+       * on add function
+       *
+       * @param  {Event} e
+       */
+      onAdd (e) {
+        // prevent default
+        e.preventDefault();
+
+        // get product
+        if (this.props.onAdd) {
+          // on add
+          this.props.onAdd(this.props.product);
+        } else {
+          // add cart
+          this.cart.add(this.props.product);
+        }
+      }
+
+      /**
+       * on remove function
+       *
+       * @param  {Event} e
+       */
+      onRemove (e) {
+        // prevent default
+        e.preventDefault();
+
+        // get product
+        this.cart.remove(this.cart.line(this.props.product));
+      }
+    }
+
+  </script>
+</product-simple-buy>

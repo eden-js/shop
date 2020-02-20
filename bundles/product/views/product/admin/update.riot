@@ -1,0 +1,225 @@
+<product-admin-update-page>
+  <div class="page page-shop">
+    <form method="post" action={ `/admin/shop/product/${props.product.id ? (props.product.id + '/update') : 'create'}` }>
+
+      <admin-header title={ `${product.id ? 'Update' : 'Create'} Product` } sticky={ true }>
+        <div slot="right">
+          <div class="btn-group mr-2">
+            <button class={ classes({ 'btn' : true, 'btn-success' : promoted, 'btn-danger' : !promoted }) } onclick={ (e) => togglePromoted(e) }>
+              { promoted ? 'Promoted' : 'Unpromoted' }
+            </button>
+            <button class={ classes({ 'btn' : true, 'btn-success' : published, 'btn-danger' : !published }) } onclick={ (e) => togglePublish(e) }>
+              { published ? 'Published' : 'Unpublished' }
+            </button>
+          </div>
+          <button class={ classes({ 'btn mr-2' : true, 'btn-primary' : preview, 'btn-info' : !preview }) } onclick={ (e) => onPreview(e) }>
+            { preview ? 'Alter Form' : 'Finish Altering' }
+          </button>
+          <button class="btn btn-success" type="submit">
+            <i class="fa fa-check mr-2" />
+            Save
+          </button>
+        </div>
+      </admin-header>
+      
+      <div class="container-fluid mb-4">
+        <!-- hidden inputs -->
+        <input type="hidden" name="promoted" value={ promoted ? 'true' : 'false' } />
+        <input type="hidden" name="published" value={ published ? 'true' : 'false' } />
+        <!-- / hidden inputs -->
+
+        <!-- product information -->
+        <div class="row">
+
+          <div class="col-md-12 col-lg-4">
+
+            <!-- product type -->
+            <div class="card mb-3">
+              <div class="card-header">
+                Type
+              </div>
+              <div class="card-body">
+                <div class="form-group">
+                  <label for="sku">Product SKU</label>
+                  <input type="text" name="sku" class="form-control" id="sku" aria-describedby="sku" placeholder="Enter sku" value={ product.sku || '' }>
+                </div>
+                <div class="form-group">
+                  <label for="type">Product Type</label>
+                  <select class="form-control" name="type" id="type" onchange={ (e) => onType(e) }>
+                    <option each={ (type, i) in props.types } value={ type.type || '' } { ...getSelected(type) }>{ eden.get('i18n.t')(`product:${type.type}.title`) }</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+            <!-- /product type -->
+              
+            <!-- product options -->
+            <div each={ (option, i) in type.opts.options } is={ `product-${option}` } product={ product } type={ type } form={ props.form } fields={ props.fields } preview={ preview } />
+            <!-- product options -->
+          </div>
+
+          <div class="col col-lg-8">
+            
+            <!-- product sections -->
+            <div each={ (section, i) in type.opts.sections } is={ `product-${section}` } product={ product } type={ type } form={ props.form } fields={ props.fields } preview={ preview } />
+            <!-- product sections -->
+            
+          </div>
+        </div>
+        <!-- / product information -->
+        
+      </div>
+    </form>
+  </div>
+
+  <script>
+    // import base
+    import Base from '../../js/base';
+
+    // export default
+    export default class ProductAdminUpdate extends Base {
+
+      /**
+       * on before mount
+       */
+      onBeforeMount(...args) {
+        // super
+        super.onBeforeMount(...args);
+
+        // set product
+        this.product = this.props.product;
+
+        // load data
+        this.type      = this.product.type ? this.props.types.find((t) => t.type === this.product.type) : this.props.types[0];
+        this.preview   = true;
+        this.promoted  = this.product.promoted;
+        this.published = this.product.published;
+      }
+      
+      /**
+       * on preview
+       *
+       * @param  {Event} e
+       *
+       * @return {*}
+       */
+      onPreview (e) {
+        // prevent default
+        e.preventDefault();
+        e.stopPropagation();
+        
+        // set loading
+        this.preview = !this.preview;
+        
+        // update view
+        this.update();
+      }
+
+      /**
+       * on description update
+       */
+      onDescription () {
+        // update descriptions
+        for (let i = 0; i < this.get('i18n.languages').length; i++) {
+          // set value
+          this.product.description[this.get('i18n.languages')[i]] = this.refs[`md-${this.get('i18n.languages')[i]}`].value;
+        }
+      }
+
+      /**
+       * on type
+       *
+       * @param  {Event} e
+       */
+      onType (e) {
+        // set type
+        this.type = this.props.types.find(t => t.type === e.target.value);
+        
+        // set opts
+        const o = this.type.opts;
+        
+        // set opts
+        this.type.opts = {};
+
+        // update view
+        this.update();
+        
+        // reset opts
+        this.type.opts = o;
+
+        // update view
+        this.update();
+      }
+
+      /**
+       * set Publish
+       *
+       * @param  {Event} e
+       */
+      togglePublish (e) {
+        // prevent default
+        e.preventDefault();
+
+        // set publish
+        this.published = !this.published;
+
+        // update view
+        this.update();
+      }
+
+      /**
+       * toggle promoted
+       *
+       * @param  {Event} e
+       */
+      togglePromoted (e) {
+        // prevent default
+        e.preventDefault();
+
+        // set publish
+        this.promoted = !this.promoted;
+
+        // update view
+        this.update();
+      }
+
+      /**
+       * get product
+       *
+       * @return {Object}
+       */
+      getProduct () {
+        // return product
+        return this.product;
+      }
+
+      /**
+       * return categories
+       *
+       * @return {Array}
+       */
+      categories () {
+        // return ids0
+        return (this.product.categories || []).map((category) => {
+          // return category id
+          return category.id;
+        });
+      }
+
+      /**
+       * returns true if this product type
+       *
+       * @param  {String}  type
+       *
+       * @return {Boolean}
+       */
+      getSelected (type) {
+        // return true if type
+        return this.type.type === type.type ? {
+          selected : 'selected'
+        } : {};
+      }
+    }
+
+  </script>
+</product-admin-update-page>

@@ -1,0 +1,36 @@
+<category-admin-remove-page>
+  <div class="page page-shop">
+
+    <admin-header title={ `Remove Category '{props.category.title[get('i18n.lang')()]}'` }>
+      <div slot="right">
+        <a href="/admin/shop/category" class="btn btn-lg btn-primary">
+          Back
+        </a>
+      </div>
+    </admin-header>
+    
+    <div class="container-fluid">
+    
+      <form method="post" action={ `/admin/shop/category/${props.category.id}/remove` }>
+        <div class="card mb-3">
+          <div class="card-body">
+            <p>
+              Are you sure you want to delete <b>{ props.category.title[get('i18n.lang')] }</b>?
+            </p>
+          </div>
+        </div>
+        <button type="submit" class="btn btn-lg btn-success">Submit</button>
+      </form>
+    
+    </div>
+  </div>
+  
+  <script>
+    // import base
+    import Base from '../../js/base';
+
+    // export default
+    export default class CategoryAdminRemovePage extends Base {}
+
+  </script>
+</category-admin-remove-page>

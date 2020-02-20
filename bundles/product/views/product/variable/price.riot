@@ -1,0 +1,45 @@
+<product-variable-price>
+  <span if={ pricing.min !== pricing.max }>from&nbsp;</span><span itemprop="price" content={ pricing.min.toFixed(2) }><money amount={ pricing.min } small={ true } /></span><span itemprop="priceCurrency" content="USD" />
+  <link itemprop="availability" href="http://schema.org/InStock" if={ props.product.available > 0 } />
+
+  <script>
+    // import base
+    import Base from '../../js/base';
+
+    // export default
+    export default class ProductVariablePrice extends Base {
+
+      /**
+       * on before mount
+       */
+      onBeforeMount(...args) {
+        // on before mount
+        super.onBeforeMount(...args);
+    
+        // get price
+        const price = parseFloat(this.props.product.pricing.price);
+
+        // get min
+        let min = price;
+        let max = price;
+
+        // get opts
+        for (let i = 0; i < (this.props.product.variations || []).length; i++) {
+          // get value
+          const options = this.props.product.variations[i].options.map((opt) => parseFloat(opt.price));
+
+          // add to max
+          max += Math.max(...options);
+          min += Math.min(...options);
+        }
+
+        // return min/max
+        this.pricing = {
+          min,
+          max
+        };
+      }
+    }
+
+  </script>
+</product-variable-price>

@@ -1,0 +1,117 @@
+<category-admin-update-page>
+  <div class="page page-admin">
+
+    <admin-header title={ `${props.item && props.item.id ? 'Update' : 'Create '} Category` }>
+      <div slot="right">
+        <a href="/admin/shop/category" class="btn btn-lg btn-primary mr-2">
+          Back
+        </a>
+        <button class={ classes({ 'btn btn-lg' : true, 'btn-primary' : preview, 'btn-success' : !preview }) } onclick={ (e) => onPreview(e) }>
+          { preview ? 'Alter Form' : 'Finish Altering' }
+        </button>
+      </div>
+    </admin-header>
+
+    <div class="container-fluid">
+      <div class="card">
+        <div class="card-body">
+          <form-render action={ `/admin/shop/category/${props.item && props.item.id ? props.item.id + '/update' : 'create'}` } method="post" ref="form" form={ props.form } placement="edenjs.category" positions={ positions } preview={ preview } class="d-block mb-3" />
+        </div>
+        <div class="card-footer text-right">
+          <button type="button" onclick={ (e) => onSubmit(e) } class={ classes({ 'btn btn-success' : true, 'disabled' : loading() }) }>
+            { loading() ? 'Submitting...' : 'Submit' }
+          </button>
+        </div>
+      </div>
+    </div>
+    
+  </div>
+  
+  <script>
+    // import base
+    import Base from '../../js/base';
+    import uuid from 'uuid';
+
+    // export default
+    export default class CategoryAdminUpdatePage extends Base {
+
+      /**
+       * on before mount
+       */
+      onBeforeMount(...args) {
+        // run super
+        super.onBeforeMount(...args);
+
+        // set type
+        this.preview = true;
+        
+        // set placements
+        this.positions = this.props.positions || this.props.fields.map((field) => {
+          // return field
+          return {
+            'type'     : field.type,
+            'uuid'     : uuid(),
+            'name'     : field.name,
+            'i18n'     : !!field.i18n,
+            'label'    : field.label,
+            'force'    : true,
+            'multiple' : field.multiple,
+            'children' : []
+          };
+        });
+      }
+    
+      /**
+       * on submit
+       *
+       * @param  {Event} e
+       *
+       * @return {*}
+       */
+      async onSubmit (e) {
+        // prevent default
+        e.preventDefault();
+        e.stopPropagation();
+        
+        // set loading
+        this.loading('submit', true);
+        
+        // submit form
+        await this.refs.form.submit();
+        
+        // set loading
+        this.loading('submit', true);
+      }
+      
+      /**
+       * on preview
+       *
+       * @param  {Event} e
+       *
+       * @return {*}
+       */
+      onPreview (e) {
+        // prevent default
+        e.preventDefault();
+        e.stopPropagation();
+        
+        // set loading
+        this.preview = !this.preview;
+        
+        // update view
+        this.update();
+      }
+
+      /**
+       * get category
+       *
+       * @return {Object}
+       */
+      category () {
+        // return category
+        return this.props.item;
+      }
+
+    }
+  </script>
+</category-admin-update-page>

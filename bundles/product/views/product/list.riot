@@ -1,0 +1,8 @@
+<product-list>
+  <div class={ props.row || 'row row-products' }>
+    <div class={ props.col || 'col-md-4' } each={ (product, i) in props.products }>
+      <div is={ `product-${product.type}-card` } product={ product } />
+    </div>
+  </div>
+  
+</product-list>

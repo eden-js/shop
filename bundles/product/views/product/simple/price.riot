@@ -1,0 +1,24 @@
+<product-simple-price>
+  <span itemprop="price" content={ price.amount.toFixed(2) }><money amount={ price.amount } small={ true } /></span><span itemprop="priceCurrency" content="USD" />
+  <link itemprop="availability" href="http://schema.org/InStock" if={ this.price.available } />
+
+  <script>
+    // import base
+    import Base from '../../js/base';
+
+    // export default
+    export default class ProductSimpleCart extends Base {
+
+      /**
+       * on before mount
+       */
+      onBeforeMount(...args) {
+        // on before mount
+        super.onBeforeMount(...args);
+
+        // set default price
+        this.price = this.props.product.price;
+      }
+    }
+  </script>
+</product-simple-price>

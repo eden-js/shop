@@ -1,0 +1,37 @@
+<product-admin-remove-page>
+  <div class="page page-shop">
+
+    <admin-header title="Remove Product">
+      <div slot="right">
+        <a href="/admin/shop/product" class="btn btn-lg btn-primary">
+          Back
+        </a>
+      </div>
+    </admin-header>
+    
+    <div class="container-fluid">
+
+      <form method="post" action={ `/admin/shop/product/${props.product.id}/remove` }>
+        <div class="card mb-3">
+          <div class="card-header">
+            Remove Product
+          </div>
+          <div class="card-body">
+            Are you sure you want to delete <b>{ props.product.title[get('i18n.lang')()] }</b>?
+          </div>
+        </div>
+        <button type="submit" class="btn btn-lg btn-success">Submit</button>
+      </form>
+      
+    </div>
+  </div>
+
+  <script>
+    // import base
+    import Base from '../../js/base';
+
+    // export default
+    export default class ProductAdminRemove extends Base {}
+
+  </script>
+</product-admin-remove-page>

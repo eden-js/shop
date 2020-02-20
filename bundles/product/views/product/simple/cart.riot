@@ -1,0 +1,42 @@
+<product-simple-cart>
+  <div class="row mx-0">
+    <div class="col-3 px-0" if={ get('props.product.images', []).length }>
+      <img class="img-fluid cart-image" src={ media.url(props.product.images[0], '3x-sq') } alt={ get(`product.title.${eden.get('i18n.lang')()}`) }>
+    </div>
+    <div class="col-7 px-0 pl-3">
+      <div class="cart-title mt-2">
+        { props.line.qty }x { get(`product.title.${eden.get('i18n.lang')()}`) }
+      </div>
+      <money amount={ product.price(props.product, props.line.opts) * props.line.qty } />
+    </div>
+    <div class="col-2 px-0">
+      <a href="#!" onclick={ (e) => props.remove(e) } class="btn btn-sm btn-danger float-right">
+        <fa i="times" />
+      </a>
+    </div>
+  </div>
+
+  <script>
+    // import base
+    import Base from '../../js/base';
+    import media from 'asset/public/js/bootstrap';
+    import product from 'product/public/js/product';
+
+    // export default
+    export default class ProductSimpleCart extends Base {
+
+      /**
+       * on before mount
+       */
+      onBeforeMount(...args) {
+        // on before mount
+        super.onBeforeMount(...args);
+
+        // mixin media
+        this.media = media;
+        this.product = product;
+      }
+    }
+
+  </script>
+</product-simple-cart>

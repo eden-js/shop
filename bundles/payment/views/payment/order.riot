@@ -1,0 +1,33 @@
+<payment-order>
+  <div class="card card-shipping card-checkout mb-3">
+    <div class="card-header">
+      { get('i18n.t')('payment.order.title') }
+    </div>
+    <!-- payment choices -->
+    <div class="list-group list-group-flush">
+      <div each={ (payment, i) in this.props.order.invoice.payments }>
+        <li if={ payment.method && payment.method.type } class={ classes({ 'list-group-item list-group-item-method' : true, 'list-group-item-active' : payment.complete }) } is={ `${payment.method.type}-payment` } order={ order() } payment={ payment } method={ payment.method } />
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // import base
+    import Base from '../js/base';
+
+    // export default
+    export default class PaymentOrder extends Base {
+
+      order() {
+        // return opts
+        return this.props.order;
+      }
+
+      action() {
+        // return action
+        return this.props.action;
+      }
+    }
+
+  </script>
+</payment-order>

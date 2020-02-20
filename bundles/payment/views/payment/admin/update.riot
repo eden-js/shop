@@ -1,0 +1,39 @@
+<payment-admin-update-page>
+  <div class="page page-shop">
+
+    <admin-header title={ `${props.payment.id ? 'Update' : 'Create'} Payment` }>
+      <div slot="right">
+        <a href="/admin/shop/payment" class="btn btn-lg btn-primary">
+          Back
+        </a>
+      </div>
+    </admin-header>
+    
+    <div class="container-fluid">
+    
+      <form method="post" action={ `/admin/shop/payment/${props.payment && props.payment.id ? (props.payment.id + '/update') : 'create'}` }>
+        <div class="card">
+          <div class="card-header">
+            <strong>{ props.payment && props.payment.id ? 'Update' : 'Add' } Payment</strong>
+            <p class="mb-0">{ props.payment.username || props.payment.email || '' }</p>
+          </div>
+          <div class="card-body">
+            <div class="form-group">
+              <label>
+                Payment Status
+              </label>
+              <select class="form-control" name="paid">
+                <option value="paid" selected={ props.payment.complete }>Paid</option>
+                <option value="unpaid" selected={ !props.payment.complete }>Unpaid</option>
+              </select>
+            </div>
+          </div>
+          <div class="card-footer">
+            <button type="submit" class="btn btn-primary">Submit</button>
+          </div>
+        </div>
+      </form>
+    
+    </div>
+  </div>
+</payment-admin-update-page>

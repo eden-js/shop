@@ -1,0 +1,44 @@
+<order-admin-update-page>
+  <div class="page page-shop">
+    <admin-header title={ `${order.id ? 'Update' : 'Create'} Order` }>
+      <yield to="right">
+        <a class={ classes({ 'btn btn-lg btn-info mr-2' : true, 'disabled' : !invoice }) } href={ `/admin/shop/invoice/${get('invoice.id')}/update` }>
+          View Invoice
+        </a>
+        <a class={ classes({ 'btn btn-lg btn-info mr-2' : true, 'disabled' : !order }) } href={ `/admin/shop/order/${get('order.id')}/view` }>
+          View Order
+        </a>
+        <a href="/admin/shop/order" class="btn btn-lg btn-primary">
+          Back
+        </a>
+      </yield>
+    </admin-header>
+
+    <div class="container">
+
+      <order-update order={ order } invoice={ invoice } />
+
+    </div>
+
+  <script>
+    // import base
+    import Base from '../../js/base';
+
+    // export default
+    export default class OrderAdminUpdate extends Base {
+
+      /**
+       * on before mount
+       */
+      onBeforeMount(...args) {
+        // run super
+        super.onBeforeMount(...args);
+
+        // set initial discount
+        this.order   = opts.order;
+        this.invoice = this.order.invoice;
+      }
+    }
+
+  </script>
+</order-admin-update-page>

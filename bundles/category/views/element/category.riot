@@ -1,0 +1,26 @@
+<element-category>
+  <span each={ (item, i) in categories }>
+    <a href={ `/admin/shop/category/${item.id}/update` }>{ item.title[get('i18n.lang')()] }</a>
+    { i === categories.length - 1 ? '' : ', ' }
+  </span>
+  
+  <script>
+    // import base
+    import Base from '../js/base';
+
+    // export default
+    export default class ElementCategory extends Base {
+      /**
+       * on before mount
+       */
+      onBeforeMount(...args) {
+        // run super
+        super.onBeforeMount(...args);
+    
+        // set categories
+        this.categories = (Array.isArray(opts.data.value) ? opts.data.value : [opts.data.value]).filter(v => v);
+      }
+    }
+    
+  </script>
+</element-category>

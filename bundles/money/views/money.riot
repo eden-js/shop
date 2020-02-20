@@ -1,0 +1,45 @@
+<money>
+  <span>
+    <span contenteditable={ props.editable } onblur={ props.onChange }>{ format() }</span> { props.showCurrency ? (props.currency || settings.currency || get('shop.currency')) : '' }
+  </span>
+
+  <script>
+    // import base
+    import Base from './js/base';
+
+    // export default
+    export default class Money extends Base {
+
+      /**
+       * formats currency
+       *
+       * @return {String}
+       */
+      format () {
+        // get currency
+        let currency = require('currency-formatter');
+
+        // get value
+        let value = this.props.convert !== false ? (parseFloat(this.props.amount) * this.eden.get('shop.rates')[this.props.currency || this.settings.currency || this.eden.get('shop.currency')]) : this.props.amount;
+
+        // check value
+        if (this.settings.currency === 'JPY') {
+          // round to nearest 10
+          value = Math.ceil(value / 10) * 10;
+        }
+
+        // return formatted currency
+        const formatted = currency.format(value, {
+          'code' : this.props.currency || this.settings.currency || this.eden.get('shop.currency')
+        });
+        
+        // return short value
+        if (this.props.small) return formatted.split('.')[0];
+        
+        // return formatted
+        return formatted;
+      }
+    }
+
+  </script>
+</money>

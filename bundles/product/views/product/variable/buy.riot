@@ -1,0 +1,153 @@
+<product-variable-buy>
+  <div class="product-simple-buy">
+    <div class="card">
+      <div class="card-body pb-0">
+        <div class="row">
+          <div class="col-6" each={ (variation, i) in props.product.variations }>
+            <div if={ variation.type === 'select' } class="form-group">
+              <label for={ `variation-${i}` }>
+                { variation.title }
+              </label>
+              <select name={ `variation-${i}` } data-variation={ i } class="form-control" onchange={ (e) => onChange(e) }>
+                <option each={ (option, a) in variation.options } value={ option.sku } no-reorder>
+                  { option.name } { parseFloat(option.price) > 0 ? '+' + format(parseFloat(option.price)) : '' }
+                </option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="card-body">
+        <span class="btn btn-link px-0">
+          <span is={ `product-${props.product.type}-availability` } product={ props.product } />
+        </span>
+        
+        <a href="/checkout" class="btn btn-primary float-right ml-2" if={ cart.has(props.product, Object.values(skus())) && !props.onAdd }>
+          { eden.get('i18n.t')('checkout.proceed') }
+        </a>
+        
+        <span class="btn-group float-right">
+          <a href="#!" if={ cart.has(props.product, Object.values(skus())) && !props.onAdd } onclick={ (e) => onRemove(e) } class="btn btn-danger">
+            <i class="fa fa-times" />
+          </a>
+          <a href="#!" onclick={ (e) => onAdd(e) } class={ classes({ 'btn btn-success' : true, 'disabled' : !props.product.price.available }) }>
+            <span if={ cart.has(props.product, Object.values(skus())) && !props.onAdd }>{ cart.line(props.product, Object.values(skus())).qty }</span> { eden.get('i18n.t')(cart.has(props.product, Object.values(skus())) && !props.onAdd ? 'cart.added' : 'cart.add') }
+          </a>
+        </span>
+        
+        <button class="btn btn-link float-right mr-2">
+          <money amount={ product.price(props.product, Object.values(skus())) } />
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // import base
+    import Base from '../../js/base';
+    import product from 'product/public/js/product';
+    import currency from 'currency-formatter';
+
+    // export default
+    export default class ProductVariableBuy extends Base {
+      
+      /**
+       * on before mount
+       */
+      onBeforeMount(...args) {
+        // on before mount
+        super.onBeforeMount(...args);
+
+        // mixins
+        this.product = product;
+      }
+
+      /**
+       * skus
+       *
+       * @return {Array}
+       */
+      skus() {
+        // set array
+        let skus = {};
+
+        // check frontend
+        if (!this.eden.frontend) return skus;
+
+        // loop options
+        jQuery('[data-variation]').each(function () {
+          // get sku
+          skus[jQuery(this).attr('data-variation')] = jQuery(this).val();
+        });
+
+        // return skus
+        return skus;
+      }
+
+      /**
+      * on add function
+      *
+      * @param  {Event} e
+      */
+      onAdd(e) {
+        // prevent default
+        e.preventDefault();
+
+        // get product
+        if (this.props.onAdd) {
+          // on add
+          this.props.onAdd(this.props.product, Object.values(this.skus()));
+        } else {
+          // add cart
+          this.cart.add(this.props.product, Object.values(this.skus()));
+        }
+      }
+
+      /**
+      * on remove function
+      *
+      * @param  {Event} e
+      */
+      onRemove(e) {
+        // prevent default
+        e.preventDefault();
+
+        // get product
+        this.cart.remove(this.cart.line(this.props.product, Object.values(this.props.skus())));
+      }
+
+      /**
+      * update view
+      *
+      * @param  {Event} e
+      */
+      onChange(e) {
+        // update view
+        this.update();
+      }
+
+      /**
+      * formats currency
+      *
+      * @return {String}
+      */
+      format(amount) {
+        // get value
+        let value = this.props.convert !== false ? (parseFloat(amount) * this.eden.get('shop.rates')[this.props.currency || this.settings.currency || this.eden.get('shop.currency')]) : amount;
+
+        // check value
+        if (this.settings.currency === 'JPY') {
+          // round to nearest 10
+          value = Math.ceil(value / 10) * 10;
+        } else {
+          value = Math.ceil(value * 10) / 10;
+        }
+
+        // return formatted currency
+        return this.eden.frontend ? currency.format(value, {
+          'code' : this.props.currency || this.settings.currency || this.eden.get('shop.currency')
+        }) : value.toLocaleString();
+      }
+    }
+  </script>
+</product-variable-buy>

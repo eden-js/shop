@@ -1,0 +1,40 @@
+<product-display>
+  <div class="card mb-3">
+    <div class="card-header">
+      Display
+    </div>
+    <div class="card-body">
+      <form-render ref="form" form={ props.form } placement="shop.product" positions={ positions } preview={ props.preview } class="d-block mb-3" />
+    </div>
+  </div>
+  
+  <script>
+    // import base
+    import Base from '../js/base';
+    import uuid from 'uuid';
+
+    // export default
+    export default class ProductDisplay extends Base {
+
+      onBeforeMount(...args) {
+        // run super
+        super.onBeforeMount(...args);
+
+        // set placements
+        this.positions = this.props.positions || this.props.fields.map((field) => {
+          // return field
+          return {
+            'type'     : field.type,
+            'uuid'     : uuid(),
+            'name'     : field.name,
+            'i18n'     : !!field.i18n,
+            'label'    : field.label,
+            'force'    : true,
+            'multiple' : field.multiple,
+            'children' : []
+          };
+        });
+      }
+    }
+  </script>
+</product-display>
